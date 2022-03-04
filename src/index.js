@@ -7,11 +7,18 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//Global
+const midGbl = function(req, res, next){
+    console.log("hi iam global middleware")
+    next()
+}
+app.use(midGbl)
+
 
 mongoose.connect("mongodb+srv://popinzs007:Krishp007@cluster0.yil5n.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
     useNewUrlParser: true
 })
-.then( () => console.log("MongoDb is connected"))
+.then( () => console.log())
 .catch ( err => console.log(err) )
 
 app.use('/', route);
