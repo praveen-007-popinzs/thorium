@@ -23,11 +23,16 @@ const DeleteUser = async function (res) {
   console.log("all validation of Deleteuser are added to middleware")
 };
 const postMessage = async function (res) {
-  console.log("all validation of Deleteuser are added to middleware")
+  console.log("all validation of post are added to middleware")
+};
+
+const createBook = async function (res) {
+  console.log("created books are added to middleware")
 };
 
 
-module.exports.postMessage = postMessage
+module.exports.postMessage = postMessage;
+module.exports.createBook = createBook;
 module.exports.createUser = createUser;
 module.exports.DeleteUser = DeleteUser;
 module.exports.getUserData = getUserData;

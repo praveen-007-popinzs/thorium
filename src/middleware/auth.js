@@ -5,13 +5,11 @@ const userModel = require("../models/userModel");
 const loginMid = async function (req, res, next) {
     let userName = req.body.emailId;
     let password = req.body.password;
-  
+  // BAD REQUEST
     let user = await userModel.findOne({ emailId: userName, password: password });
     if (!user)
-      return res.send({
-        status: false,
-        msg: "username or the password is not corerct",
-      });
+        res.status(400).send({ msg: "BAD REQUEST"})
+
 
     let token = jwt.sign(
       {
@@ -22,10 +20,27 @@ const loginMid = async function (req, res, next) {
       "jct-cse"
     );
     res.setHeader("x-auth-token", token);
-    res.send({ status: true, data: token });
+    console.log({ status: true, data: token });
+    res.status(200).send({ msg: "ALL GOOD and NEW RESOURCES WAS SUCCESSFULLY CREATED"})
 
     next()
   };
+
+  //========================
+  const createBook = async function (req, res) {
+    try {
+        let data = req.body.message
+        if(!data){
+          res.status(500).send({ msg: "SERVER SIDE"})
+        }
+        
+    }
+    catch (err) {
+        console.log("This is the error :", err.message)
+        res.status(500).send({ msg: "Error", error: err.message })
+    }
+}
+
   //get user validation
 
   const getUserMid = async function (req, res, next) {
@@ -37,6 +52,7 @@ const loginMid = async function (req, res, next) {
       
     let userId = req.params.userId;
     let userDetails = await userModel.findById(userId);
+    
     if (!userDetails)
       return res.send({ status: false, msg: "No such user exists" });
   
@@ -51,7 +67,13 @@ const loginMid = async function (req, res, next) {
 
   const updateUserMid = async function (req, res, next) {
     let token = req.headers["x-auth-token"];
-  if (!token) return res.send({ status: false, msg: "token must be present" });
+  if (!token) {
+    res.status(401).send({ msg: "AUTHENTICATION MISSING"})
+  }else{
+    res.status(403).send({ msg: " NOT AUTHENTICATED OR FORBIDDEN"})
+
+  }
+
   
     let userId = req.params.userId;
     let user = await userModel.findById(userId);
@@ -69,11 +91,11 @@ const loginMid = async function (req, res, next) {
   const DeleteUserMid = async function (req, res, next) {
     let token = req.headers["x-auth-token"];
   if (!token) return res.send({ status: false, msg: "token must be present" });
-  
+    //RESOURCE NOT FOUND
     let userId = req.params.userId;
     let user = await userModel.findById(userId);
     if (!user) {
-      return res.send("No such user exists");
+      res.status(404).send({ msg: "RESOURCE NOT FOUND"})
     }
   
     let userData = req.body;
@@ -82,31 +104,32 @@ const loginMid = async function (req, res, next) {
     next()
   };
 
-  const postMessage = async function (req, res, next) {
-    let message = req.body.message
-    let token = req.headers["x-auth-token"]
-    if(!token) return res.send({status: false, msg: "token must be present in the request header"})
-    let decodedToken = jwt.verify(token, 'functionup-thorium')
+  // const postMessage = async function (req, res, next) {
+  //   let message = req.body.message
+  //   let token = req.headers["x-auth-token"]
+  //   if(!token) return res.send({status: false, msg: "token must be present in the request header"})
+  //   let decodedToken = jwt.verify(token, 'functionup-thorium')
 
-    if(!decodedToken) return res.send({status: false, msg:"token is not valid"})
+  //   if(!decodedToken) return res.send({status: false, msg:"token is not valid"})
   
-    let userToBeModified = req.params.userId
-    let userLoggedIn = decodedToken.userId
+  //   let userToBeModified = req.params.userId
+  //   let userLoggedIn = decodedToken.userId
 
-    if(userToBeModified != userLoggedIn) return res.send({status: false, msg: 'User logged is not allowed to modify the requested users data'})
+  //   if(userToBeModified != userLoggedIn) return res.send({status: false, msg: 'User logged is not allowed to modify the requested users data'})
 
-    let user = await userModel.findById(req.params.userId)
-    if(!user) return res.send({status: false, msg: 'No such user exists'})
+  //   let user = await userModel.findById(req.params.userId)
+  //   if(!user) return res.send({status: false, msg: 'No such user exists'})
     
-    let updatedPosts = user.posts
-    updatedPosts.push(message)
-    let updatedUser = await userModel.findOneAndUpdate({_id: user._id},{posts: updatedPosts}, {new: true})
+  //   let updatedPosts = user.posts
+  //   updatedPosts.push(message)
+  //   let updatedUser = await userModel.findOneAndUpdate({_id: user._id},{posts: updatedPosts}, {new: true})
 
-    return res.send({status: true, data: updatedUser})
-    next()
-}
+  //   return res.send({status: true, data: updatedUser})
+  //   next()
+//}
  
-module.exports.postMessage = postMessage
+//module.exports.postMessage = postMessage\
+module.exports.createBook = createBook
 module.exports.getUserMid = getUserMid  
 module.exports.DeleteUserMid = DeleteUserMid  
 module.exports.updateUserMid = updateUserMid
