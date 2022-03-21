@@ -32,24 +32,24 @@ const createBlog = async function (req, res) {
 
 
 
-// const allBlogs = async function (req, res) {
-//     try {
-//         let blogData = await blogModel.find({ isDeleted: false, isPublished: true })
+const allBlogs = async function (req, res) {
+    try {
+        let blogData = await blogModel.find({ isDeleted: false, isPublished: true })
 
-//         if (blogData.length > 0) {
-//             res.status(200).send({ status: true, msg: blogData })
+        if (blogData.length > 0) {
+            res.status(200).send({ status: true, msg: blogData })
 
-//         } else {
-//             res.status(404).send({ status: false, msg: "No data found" })
-//         }
-
-
-//     } catch (err) {
-//         res.status(400).send({ status: true, msg: err.message })
-//     }
+        } else {
+            res.status(404).send({ status: false, msg: "No data found" })
+        }
 
 
-// }
+    } catch (err) {
+        res.status(400).send({ status: true, msg: err.message })
+    }
+
+
+}
 
 
 
@@ -85,34 +85,33 @@ const BloglistbyFilter = async function (req, res) {
 
 
 
-
 const updateBlog = async function (req, res) {
-    // try {
+     try {
         let data = req.body
         if (Object.keys(data).length != 0) {
             // data.isPublished = true
             // data.publishedAt = new Date()
 
 
-            // let id = req.params.blogId
-            // let check = await blogModel.findById(id)
+            let id = req.params.blogId
+            let check = await blogModel.findById(id)
             //console.log(check)
 
-            // if (check.isDeleted == false) {
+            if (check.isDeleted == true) {
             let results = await blogModel.findOneAndUpdate(
-                { _id: req.blogId },
-                { $set: { title: data.title}},
+                { _id: req.blogId},
+                { $set: { category: data.category}},
                 //data,
                 // { returnOriginal: false } or {new:true}
-                {new :true}
+                //{new :true}
             )
-            return res.status(200).send({ status: true, msg : "updated" })
+            return res.status(200).send({ status: true, data : "updated" })
 
 
 
-            // } else {
-            //     res.status(404).send({ status: false, msg: "The post is already removed from the server" })
-            // }
+            } else {
+                res.status(404).send({ status: false, msg: "The post is already removed from the server" })
+            }
 
 
 
@@ -123,12 +122,12 @@ const updateBlog = async function (req, res) {
 
 
      } 
-    //  catch (err) {
+     catch (err) {
 
-//         res.status(400).send({ status: false, msg: err.message })
-//     }
+        res.status(400).send({ status: false, msg: err.message })
+    }
 
-// }
+}
 
 
 
@@ -201,7 +200,7 @@ const deletecertainBlog = async function (req, res) {
             )
             //console.log(result)
             if (result) {
-                res.status(200).send({ status: true, msg: "done" })
+                res.status(200).send({ status: true, msg: result })
 
             } else {
                 res.status(404).send({ status: false, msg: "following match does not exist" })
@@ -257,7 +256,7 @@ const userLogin = async function (req, res) {
 
 
 module.exports.createBlog = createBlog
-//module.exports.allBlogs = allBlogs
+module.exports.allBlogs = allBlogs
 module.exports.BloglistbyFilter = BloglistbyFilter
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlog = deleteBlog

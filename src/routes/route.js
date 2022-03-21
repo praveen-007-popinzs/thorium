@@ -26,10 +26,11 @@ router.get("/blogs", authMiddleware.authenticate,   blogController.BloglistbyFil
 
 router.put("/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorise, blogController.updateBlog)
 
-router.delete("/delete/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorise ,  blogController.deleteBlog)
+router.delete("/delete/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorise , blogController.deleteBlog)
 
-router.delete("/delete/blogs" , authMiddleware.authenticate,  blogController.deletecertainBlog)
+router.delete("/delete/blogs" , authMiddleware.authenticate,  authMiddleware.authorise ,  blogController.deletecertainBlog)
 
 router.post("/login", blogController.userLogin)
+router.get("/allBlogs", blogController.allBlogs)
 
 module.exports = router;

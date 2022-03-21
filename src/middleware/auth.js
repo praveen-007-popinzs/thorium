@@ -13,7 +13,7 @@ let authenticate = async function (req, res, next) {
         let decodeToken = jwt.verify(token, "Ronaldo-007")
         if (decodeToken) {
             req.decodeToken = decodeToken
-            console.log(req.decodeToken)
+           // console.log(req.decodeToken)
             next()
 
         } else {
@@ -31,7 +31,7 @@ let authenticate = async function (req, res, next) {
 
 const authorise = async function (req, res, next) {
     try {
-        let blogId = req.params.blogId
+        let blogId = req.query.blogId
 
         let check = await blogModel.findById(blogId) // we can add isdeleted check here
         if (check) {
@@ -52,7 +52,7 @@ const authorise = async function (req, res, next) {
 
 
     } catch (err) {
-      //  return res.status(500).send({ status: false, msg: err.message })
+        return res.status(500).send({ status: false, msg: err.message })
 
 
     }
